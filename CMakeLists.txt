@@ -73,13 +73,13 @@ add_subdirectory(MatrixLib)
 add_subdirectory(MatrixGame)
 
 install(
-    TARGETS MatrixGame
+    TARGETS MatrixGameClient MatrixGameServer
     CONFIGURATIONS Release
     RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin
     LIBRARY DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin
 )
 install(
-    TARGETS MatrixGame
+    TARGETS MatrixGameClient MatrixGameServer
     CONFIGURATIONS Debug
     RUNTIME DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
     LIBRARY DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
@@ -87,7 +87,7 @@ install(
 
 if(MSVC)
     install(
-        FILES $<TARGET_PDB_FILE:MatrixGame>
+        FILES $<TARGET_PDB_FILE:MatrixGameClient> $<TARGET_PDB_FILE:MatrixGameServer>
         CONFIGURATIONS Debug
         DESTINATION ${CMAKE_CURRENT_SOURCE_DIR}/bin/Debug
     )

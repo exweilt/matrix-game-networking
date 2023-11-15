@@ -78,12 +78,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 
         timeBeginPeriod(1);
 
-        if (g_NetMode == SERVER)
-            lgr.info("yay server");
-        if (g_NetMode == CLIENT)
-            lgr.info("yay cli");
-        if (g_NetMode == SINGLEPLAYER)
-            lgr.info("yay single");
+        //#ifdef CLIENT_ON
+        //    lgr.info("yay cli");
+        //#elif SERVER_ON
+        //    lgr.info("yay server");
+        //#else
+        //    lgr.info("yay single");
+        //#endif
 
         if (map)
         {
