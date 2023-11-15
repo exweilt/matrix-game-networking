@@ -77,6 +77,7 @@ endif()
 add_matrix_directory(src/Effects)
 add_matrix_directory(src/Interface)
 add_matrix_directory(src/Logic)
+add_matrix_directory(src/Network)
 
 source_group("Resources" FILES ${MATRIX_RESOURCES})
 
@@ -93,3 +94,14 @@ target_sources(MatrixGame PRIVATE
 )
 
 target_link_libraries(MatrixGame MatrixGameInternal)
+
+
+add_executable(MatrixGameClient)
+target_sources(MatrixGameClient PRIVATE src/MatrixGame.cpp)
+target_compile_definitions(MatrixGameClient PRIVATE CLIENT_ON)
+target_link_libraries(MatrixGameClient MatrixGameInternal)
+
+add_executable(MatrixGameServer)
+target_sources(MatrixGameServer PRIVATE src/MatrixGame.cpp)
+target_compile_definitions(MatrixGameServer PRIVATE SERVER_ON)
+target_link_libraries(MatrixGameServer MatrixGameInternal)

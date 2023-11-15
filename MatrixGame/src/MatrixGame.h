@@ -7,6 +7,7 @@
 
 #include "MatrixFormGame.hpp"
 #include "MatrixGameDll.hpp"
+#include "Network/MatrixNetworkManager.h"
 
 #include "CHeap.hpp"
 #include "CBlockPar.hpp"
@@ -30,6 +31,7 @@ extern SMenuItemText *g_PopupWeaponExtern;
 extern SMenuItemText *g_PopupHull;
 extern SMenuItemText *g_PopupChassis;
 extern CHistory *g_ConfigHistory;
+extern const GAME_NETWORK_MODE g_NetMode;
 
 class CGame {
 public:

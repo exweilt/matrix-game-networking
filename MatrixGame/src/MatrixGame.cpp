@@ -20,6 +20,7 @@
 #include "Interface/CHistory.h"
 #include "MatrixSampleStateManager.hpp"
 #include "MatrixMultiSelection.hpp"
+#include "Network/MatrixNetworkManager.h"
 
 #include <new>
 #include <fstream>
@@ -28,7 +29,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <stupid_logger.hpp>
-logger_type lgr{"test.log"};
 ////////////////////////////////////////////////////////////////////////////////
 
 CHeap *g_MatrixHeap;
@@ -36,6 +36,17 @@ CBlockPar *g_MatrixData;
 CMatrixMapLogic *g_MatrixMap;
 CRenderPipeline *g_Render;
 CLoadProgress *g_LoadProgress;
+
+#if defined(CLIENT_ON)
+    const GAME_NETWORK_MODE g_NetMode = CLIENT;
+    logger_type lgr{"net_client.log"};
+#elif defined(SERVER_ON)
+    const GAME_NETWORK_MODE g_NetMode = SERVER;
+    logger_type lgr{"net_server.log"};
+#else
+    const GAME_NETWORK_MODE g_NetMode = SINGLEPLAYER;
+    logger_type lgr{"singleplayer.log"};
+#endif
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 {
@@ -66,6 +77,13 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
         FormChange(formgame);
 
         timeBeginPeriod(1);
+
+        if (g_NetMode == SERVER)
+            lgr.info("yay server");
+        if (g_NetMode == CLIENT)
+            lgr.info("yay cli");
+        if (g_NetMode == SINGLEPLAYER)
+            lgr.info("yay single");
 
         if (map)
         {
