@@ -1,5 +1,7 @@
 #pragma once
 
+#include "enet/enet.h"
+
 #include <queue>
 #include <thread>
 #include <map>

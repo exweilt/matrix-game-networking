@@ -5,6 +5,10 @@
 
 // MatrixGame.cpp : Defines the entry point for the application.
 
+#include <windows.h>
+#include <shellapi.h>
+#include <timeapi.h>
+
 #include "CStorage.hpp"
 #include "CFile.hpp"
 

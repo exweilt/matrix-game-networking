@@ -1,6 +1,10 @@
 add_library(MatrixGameClientInternal STATIC)
 add_library(MatrixGameServerInternal STATIC)
 
+#find_package(Winsock REQUIRED)
+#include_directories(${Winsock_INCLUDE_DIRS})
+#target_link_libraries(YourTarget ${Winsock_LIBRARIES})
+
 macro(add_matrix_directory DIRECTORY)
     file(GLOB DIR_SOURCES ${DIRECTORY}/*.cpp ${DIRECTORY}/*.c)
     file(GLOB DIR_HEADERS ${DIRECTORY}/*.hpp ${DIRECTORY}/*.h)
@@ -33,6 +37,7 @@ target_include_directories(
     PUBLIC
         .
         src
+	${ENET_INCLUDE_DIRS}
         "$<$<C_COMPILER_ID:MSVC>:${DIRECTX9_INCLUDE_DIRS}>")
 
 target_compile_options(
@@ -43,6 +48,7 @@ target_compile_options(
 target_compile_definitions(
     MatrixGameClientInternal
     PUBLIC
+	WIN32_LEAN_AND_MEAN
         MATRIXGAME_EXPORTS
         $<$<CONFIG:Release>:ASSERT_OFF>
         _ALLOW_RTCc_IN_STL
@@ -62,6 +68,9 @@ target_link_libraries(
         winmm
         ${DIRECTX9_LIBRARIES}
         MatrixLib
+	Ws2_32.lib
+	winmm.lib 
+	ENET
         "$<$<C_COMPILER_ID:MSVC>:legacy_stdio_definitions>"
 )
 
@@ -80,6 +89,7 @@ target_include_directories(
     PUBLIC
         .
         src
+	${ENET_INCLUDE_DIRS}
         "$<$<C_COMPILER_ID:MSVC>:${DIRECTX9_INCLUDE_DIRS}>")
 
 target_compile_options(
@@ -90,6 +100,7 @@ target_compile_options(
 target_compile_definitions(
     MatrixGameServerInternal
     PUBLIC
+	WIN32_LEAN_AND_MEAN
         MATRIXGAME_EXPORTS
         $<$<CONFIG:Release>:ASSERT_OFF>
         _ALLOW_RTCc_IN_STL
@@ -109,6 +120,9 @@ target_link_libraries(
         winmm
         ${DIRECTX9_LIBRARIES}
         MatrixLib
+	ws2_32.lib
+	winmm.lib 
+	ENET
         "$<$<C_COMPILER_ID:MSVC>:legacy_stdio_definitions>"
 )
 

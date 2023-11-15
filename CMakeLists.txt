@@ -11,7 +11,7 @@ endif()
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-option(MATRIXGAME_BUILD_DLL "Build dll instead of exe" TRUE)
+option(MATRIXGAME_BUILD_DLL "Build dll instead of exe" FALSE)
 option(MATRIXGAME_CHEATS "Enable cheats" TRUE)
 
 find_package(DIRECTX9 REQUIRED)
@@ -71,6 +71,14 @@ endif()
 
 add_subdirectory(MatrixLib)
 add_subdirectory(MatrixGame)
+
+add_dependencies(MatrixGameClientInternal enet_external)
+target_link_libraries(MatrixGameClientInternal INTERFACE enet.lib)
+link_directories(${CMAKE_BINARY_DIR}/enet/lib/static)
+
+add_dependencies(MatrixGameServerInternal enet_external)
+target_link_libraries(MatrixGameServerInternal INTERFACE enet.lib)
+link_directories(${CMAKE_BINARY_DIR}/enet/lib/static)
 
 install(
     TARGETS MatrixGameClient MatrixGameServer

@@ -3,6 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <windows.h>
+#include <timeapi.h>
+
 #include "MatrixSide.hpp"
 #include "MatrixMap.hpp"
 #include "MatrixRobot.hpp"
@@ -804,7 +807,7 @@ void CMatrixSideUnit::OnLButtonDouble(
         Select(ROBOT, NULL);
     }
     else if (GetCurGroup() && GetCurGroup()->GetObjectsCnt() > 1) {
-        Select(GROUP, NULL);
+        Select(OBJ_GROUP, NULL);
     }
 }
 
@@ -1004,7 +1007,7 @@ void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject) {
         g_IFaceList->ResetOrderingMode();
     }
 
-    if (type == GROUP || type == FLYER || type == ROBOT) {
+    if (type == OBJ_GROUP || type == FLYER || type == ROBOT) {
         if (m_Id == PLAYER_SIDE) {
             int rnd = g_MatrixMap->Rnd(0, 6);
             if (!rnd) {
@@ -1051,7 +1054,7 @@ void CMatrixSideUnit::Select(ESelType type, CMatrixMapStatic *pObject) {
             CSound::Play(S_BUILDING_SEL, SL_SELECTION);
         }
     }
-    else if (type == GROUP) {
+    else if (type == OBJ_GROUP) {
         m_CurrSel = GROUP_SELECTED;
 
         SetCurSelNum(0);

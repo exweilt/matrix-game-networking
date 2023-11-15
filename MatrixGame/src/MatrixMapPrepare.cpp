@@ -3,6 +3,9 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include <windows.h>
+#include <timeapi.h>
+
 #include "MatrixMap.hpp"
 #include "MatrixLoadProgress.hpp"
 #include "Common.hpp"

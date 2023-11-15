@@ -62,3 +62,38 @@ else()
   target_link_libraries(LIBPNG INTERFACE png ZLIB)
 endif()
 add_dependencies(LIBPNG libpng-external)
+
+#===============================================================================
+
+cmake_policy(SET CMP0135 NEW)
+
+ExternalProject_Add(
+    enet_external
+    GIT_REPOSITORY https://github.com/lsalzman/enet
+    GIT_TAG master  # or specify a commit hash or tag
+    PREFIX enet  # Set your desired installation directory
+    UPDATE_DISCONNECTED 1  # Set to 1 to avoid updating the source on every build
+    CMAKE_ARGS
+    	-DCMAKE_INSTALL_PREFIX=${CMAKE_CURRENT_BINARY_DIR}/enet
+    	-DBUILD_SHARED_LIBS=False
+  INSTALL_COMMAND
+    ${CMAKE_COMMAND}
+      --build .
+      --target install
+      --config Release
+)
+
+add_library(ENET INTERFACE)
+target_include_directories(ENET INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/enet/include)
+target_link_directories(ENET INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/enet/lib/static)
+target_link_libraries(ENET INTERFACE Ws2_32.lib winmm.lib enet.lib)
+add_dependencies(ENET enet_external)
+
+
+# set(ZLIB_STATIC_FILENAME zlibstatic.lib)
+
+
+# After building ENet, you can use the following to link against it
+#ExternalProject_Get_Property(enet_external SOURCE_DIR)
+#include_directories(${SOURCE_DIR}/include)  # Include ENet headers
+#link_directories(${CMAKE_BINARY_DIR}/enet/lib)  # Link against ENet libraries

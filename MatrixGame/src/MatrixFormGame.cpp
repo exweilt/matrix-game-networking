@@ -576,7 +576,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
                     if (ps->GetCurGroup() && ps->GetCurGroup()->GetRobotsCnt() && ps->GetCurGroup()->GetFlyersCnt()) {
                         ps->GetCurGroup()->SortFlyers();
                     }
-                    ps->Select(GROUP, NULL);
+                    ps->Select(OBJ_GROUP, NULL);
                 }
                 else if (ps->GetCurSelGroup()->GetFlyersCnt() == 1 && !ps->GetCurSelGroup()->GetRobotsCnt()) {
                     DCP();
@@ -592,7 +592,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
                             ps->GetCurGroup()->GetFlyersCnt()) {
                             ps->GetCurGroup()->SortFlyers();
                         }
-                        ps->Select(GROUP, NULL);
+                        ps->Select(OBJ_GROUP, NULL);
                     }
                     else {
                         ps->SetCurGroup(ps->CreateGroupFromCurrent());
@@ -614,7 +614,7 @@ void CFormMatrixGame::MouseKey(ButtonStatus status, int key, int x, int y) {
                             ps->GetCurGroup()->GetFlyersCnt()) {
                             ps->GetCurGroup()->SortFlyers();
                         }
-                        ps->Select(GROUP, NULL);
+                        ps->Select(OBJ_GROUP, NULL);
                     }
                     else {
                         ps->SetCurGroup(ps->CreateGroupFromCurrent());
@@ -1581,7 +1581,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
                     if (ps->GetCurGroup() && ps->GetCurGroup()->GetRobotsCnt() && ps->GetCurGroup()->GetFlyersCnt()) {
                         ps->GetCurGroup()->SortFlyers();
                     }
-                    ps->Select(GROUP, NULL);
+                    ps->Select(OBJ_GROUP, NULL);
                 }
                 else if (ps->GetCurSelGroup()->GetFlyersCnt() == 1 && !ps->GetCurSelGroup()->GetRobotsCnt()) {
                     ps->CreateGroupFromCurrent();
