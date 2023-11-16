@@ -8,6 +8,7 @@
 #include "MatrixFormGame.hpp"
 #include "MatrixGameDll.hpp"
 #include "Network/MatrixNetworkManager.h"
+#include "Network/MatrixServerManager.h"
 
 #include "CHeap.hpp"
 #include "CBlockPar.hpp"
@@ -32,6 +33,10 @@ extern SMenuItemText *g_PopupHull;
 extern SMenuItemText *g_PopupChassis;
 extern CHistory *g_ConfigHistory;
 extern const GAME_NETWORK_MODE g_NetMode;
+
+#if defined(SERVER_ON)
+    extern MatrixServerManager *g_ServerMan;
+#endif
 
 class CGame {
 public:

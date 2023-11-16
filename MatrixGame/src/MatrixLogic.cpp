@@ -2773,8 +2773,13 @@ static bool Egg2(
     return true;
 }
 
+// Main Game Loop
 void CMatrixMapLogic::Takt(int step) {
     DTRACE();
+
+    #ifdef SERVER_ON
+        g_ServerMan->Loop();
+    #endif
 
     if (g_RangersInterface) {
         g_RangersInterface->m_Takt();

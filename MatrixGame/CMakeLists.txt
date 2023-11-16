@@ -165,10 +165,19 @@ source_group("Resources" FILES ${MATRIX_RESOURCES})
 
 add_executable(MatrixGameClient)
 target_sources(MatrixGameClient PRIVATE src/MatrixGame.cpp)
-target_compile_definitions(MatrixGameClient PRIVATE CLIENT_ON)
-target_link_libraries(MatrixGameClient MatrixGameClientInternal)
+target_compile_definitions(MatrixGameClient PRIVATE CLIENT_ON WIN32_LEAN_AND_MEAN)
+target_link_libraries(MatrixGameClient MatrixGameClientInternal Ws2_32.lib winmm.lib ENET)
+target_include_directories(
+    MatrixGameClient
+    PUBLIC
+	${ENET_INCLUDE_DIRS})
+
 
 add_executable(MatrixGameServer)
 target_sources(MatrixGameServer PRIVATE src/MatrixGame.cpp)
-target_compile_definitions(MatrixGameServer PRIVATE SERVER_ON)
-target_link_libraries(MatrixGameServer MatrixGameServerInternal)
+target_compile_definitions(MatrixGameServer PRIVATE SERVER_ON WIN32_LEAN_AND_MEAN)
+target_link_libraries(MatrixGameServer MatrixGameServerInternal Ws2_32.lib winmm.lib ENET)
+target_include_directories(
+    MatrixGameServer
+    PUBLIC
+	${ENET_INCLUDE_DIRS})

@@ -25,6 +25,7 @@
 #include "MatrixSampleStateManager.hpp"
 #include "MatrixMultiSelection.hpp"
 #include "Network/MatrixNetworkManager.h"
+#include "Network/MatrixServerManager.h"
 
 #include <new>
 #include <fstream>
@@ -47,6 +48,7 @@ CLoadProgress *g_LoadProgress;
 #elif defined(SERVER_ON)
     const GAME_NETWORK_MODE g_NetMode = SERVER;
     logger_type lgr{"net_server.log"};
+    MatrixServerManager *g_ServerMan;
 #else
     const GAME_NETWORK_MODE g_NetMode = SINGLEPLAYER;
     logger_type lgr{"singleplayer.log"};
@@ -111,6 +113,9 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
         }
 
         timeEndPeriod(1);
+
+        // Deinitialize Networking Library
+        ENet_Deinit();
 
         game.Deinit();
 
@@ -538,6 +543,13 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
 
     g_MatrixMap->GetPlayerSide()->Select(BUILDING, g_MatrixMap->GetPlayerSide()->m_ActiveObject);
     g_MatrixMap->m_Cursor.Select(CURSOR_ARROW);
+
+    // Initialize Networking Library
+    ENet_Init();
+
+    #ifdef SERVER_ON
+        g_ServerMan = MatrixServerManager::GetInstance();
+    #endif
 
     if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
         g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
