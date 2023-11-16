@@ -122,6 +122,8 @@ std::wstring CExceptionD3D::Info() const
 void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const wchar* captionname) {
     RECT tr;
 
+    DCP();
+
     L3GDeinit();
 
     g_HInst = hinst;
@@ -145,6 +147,8 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     else
         INITFLAG(g_Flags, GFLAG_FULLSCREEN, bpcfg.ParGet(L"FullScreen").GetStrPar(0, L",").GetInt() == 1);
 
+    DCP();
+
     int bpp;
     if (cntpar < 2)
         bpp = 32;
@@ -165,6 +169,8 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     g_WndClassName += L"_wc";
     std::string classname{utils::from_wstring(g_WndClassName)};
 
+    DCP();
+
     WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
     wcex.style = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
@@ -180,6 +186,8 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
     wcex.hIconSm = NULL;
     if (!(g_WndA = RegisterClassEx(&wcex)))
         ERROR_E;
+
+    DCP();
 
     tr.left = 0;
     tr.top = 0;
@@ -214,26 +222,37 @@ void L3GInitAsEXE(HINSTANCE hinst, CBlockPar& bpcfg, const wchar* sysname, const
         ERROR_E;
     }
 
-    GetClientRect(g_Wnd, &tr);
-    if ((g_ScreenX != (tr.right - tr.left)) || (g_ScreenY != (tr.bottom - tr.top)))
-    {
-        auto str =
-            utils::format(
-                "Resolution error: expected %dx%d, actual %dx%d",
-                g_ScreenX,
-                g_ScreenY,
-                (int)(tr.right - tr.left),
-                (int)(tr.bottom - tr.top));
+    DCP();
 
-        lgr.error(str);
-        ERROR_S(utils::to_wstring(str));
-    }
+    GetClientRect(g_Wnd, &tr);
+    DCP();
+
+    // TODO: This Resolution error gets triggered when compiling /SUBSYSTEM:CONSOLE
+    
+    //if ((g_ScreenX != (tr.right - tr.left)) || (g_ScreenY != (tr.bottom - tr.top)))
+    //{
+    //    DCP();
+    //    auto str =
+    //        utils::format(
+    //            "Resolution error: expected %dx%d, actual %dx%d",
+    //            g_ScreenX,
+    //            g_ScreenY,
+    //            (int)(tr.right - tr.left),
+    //            (int)(tr.bottom - tr.top));
+
+    //    lgr.error(str);
+    //    ERROR_S(utils::to_wstring(str));
+    //}
+
+    DCP();
 
     g_D3D = Direct3DCreate9(D3D_SDK_VERSION);
     if (!g_D3D)
     {
         ERROR_S(L"Direct3DCreate9 failed");
     }
+
+    DCP();
 
     D3DDISPLAYMODE mode;
     ASSERT_DX(g_D3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &mode));

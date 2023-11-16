@@ -5,6 +5,7 @@
 #include <iostream>
 #include <source_location>
 #include <string_view>
+#include <iostream>
 
 namespace logger
 {
@@ -57,6 +58,8 @@ public:
                         _caller.file_name(),
                         _caller.line());
                 _out.flush();
+                std::cout << std::format("{:%F %T} |{}| {} | {}:{}\n", std::chrono::system_clock::now(),
+                                         get_formatted_level(), _log_line, _caller.file_name(), _caller.line());
             }
         }
 

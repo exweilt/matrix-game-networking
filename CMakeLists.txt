@@ -32,7 +32,7 @@ if(MSVC)
         $<$<CONFIG:Debug>:/Zi /W3 /Od /GF /Gm- /RTCc /RTC1>
     )
     set(LINK_OPTIONS
-        /SUBSYSTEM:WINDOWS /DYNAMICBASE:NO /MACHINE:X86
+        /SUBSYSTEM:CONSOLE /DYNAMICBASE:NO /MACHINE:X86
         $<$<CONFIG:Release>:/INCREMENTAL:NO /OPT:REF /OPT:ICF>
         $<$<CONFIG:Debug>:/INCREMENTAL /DEBUG>
     )

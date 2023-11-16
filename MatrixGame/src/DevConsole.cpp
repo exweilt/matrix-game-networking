@@ -7,7 +7,6 @@
 #include "MatrixMap.hpp"
 #include "DevConsole.hpp"
 #include "MatrixSoundManager.hpp"
-#include "Network/MatrixServerConsole.h"
 
 #include <stupid_logger.hpp>
 
@@ -175,11 +174,12 @@ static void hSay([[maybe_unused]] const std::wstring &cmd, [[maybe_unused]] cons
 #endif
 }
 
-const char *myString = ";) ;) ;) ;)";
+//const char *myString = ";) ;) ;) ;)";
 static void hConsole([[maybe_unused]] const std::wstring &cmd, [[maybe_unused]] const std::wstring &params) {
 #ifdef SERVER_ON
+
     //lgr.info("sgijsegf0wjgwjg jwgjw09g jwgj");
-    SendMessage(g_ConsoleWnd, WM_CONSOLE_OUTPUT, 0, reinterpret_cast<LPARAM>(myString));
+    //SendMessage(g_ConsoleWnd, WM_CONSOLE_OUTPUT, 0, reinterpret_cast<LPARAM>(myString));
 #endif
 }
 

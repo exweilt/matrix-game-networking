@@ -27,12 +27,13 @@
 #include "Network/MatrixNetworkManager.h"
 #include "Network/MatrixServerManager.h"
 #include "Network/MatrixClientManager.h"
-#include "Network/MatrixServerConsole.h"
 
 #include <new>
 #include <fstream>
 #include <iostream>
 #include <filesystem>
+
+#include <iostream>
 
 ////////////////////////////////////////////////////////////////////////////////
 #include <stupid_logger.hpp>
@@ -57,7 +58,7 @@ CLoadProgress *g_LoadProgress;
     logger_type lgr{"singleplayer.log"};
 #endif
 
-int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
+int main(HINSTANCE hInstance, HINSTANCE, LPTSTR, int)
 {
     const wchar *cmd = GetCommandLineW();
 
@@ -302,17 +303,17 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
     g_MatrixData->BlockGet(L"Config")->SaveInTextFile(L"g_ConfigDump.txt");
 #endif
 
-    std::cout << "HI !";
-
     if (set)
         L3GInitAsDLL(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game", wnd, set->FDirect3D,
                      set->FD3DDevice);
     else
         L3GInitAsEXE(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game");
 
-#ifdef SERVER_ON
-    ConsoleWindowInit(inst);
-#endif
+    DCP();
+
+//#ifdef SERVER_ON
+//    ConsoleWindowInit(inst);
+//#endif
 
     //=========================================================================
     // this shit is pretending to be a settings provided by a main game
