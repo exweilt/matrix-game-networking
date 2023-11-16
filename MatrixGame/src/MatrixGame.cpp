@@ -27,6 +27,7 @@
 #include "Network/MatrixNetworkManager.h"
 #include "Network/MatrixServerManager.h"
 #include "Network/MatrixClientManager.h"
+#include "Network/MatrixServerConsole.h"
 
 #include <new>
 #include <fstream>
@@ -300,6 +301,8 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
 #ifdef _DEBUG
     g_MatrixData->BlockGet(L"Config")->SaveInTextFile(L"g_ConfigDump.txt");
 #endif
+
+    std::cout << "HI !";
 
     if (set)
         L3GInitAsDLL(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game", wnd, set->FDirect3D,
