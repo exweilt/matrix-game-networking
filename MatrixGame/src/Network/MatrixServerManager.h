@@ -10,6 +10,7 @@ public:
 
     ENetAddress address;
     ENetHost *server;
+    ENetPeer *client;
 
     // Also Initializes manager if it hasn't before.
     // Make sure everything else is ready.

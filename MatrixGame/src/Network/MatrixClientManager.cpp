@@ -38,6 +38,9 @@ void MatrixClientManager::TryConnect() {
         exit(EXIT_FAILURE);
     }
     if (enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
+        ENetPacket *packet = enet_packet_create(0, 0, ENET_PACKET_FLAG_RELIABLE);
+        enet_peer_send(this->server_peer, 0, packet);
+        enet_host_flush(this->client);
         lgr.info("Connected to the server.");
     }
     else {

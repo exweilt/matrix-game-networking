@@ -25,6 +25,8 @@ void ENet_Init();
 
 void ENet_Deinit();
 
+std::string IntToIPAddress(unsigned int ip);
+
 //enum RequestType {
 //    NONE,
 //    CONNECT,

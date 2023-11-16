@@ -1,5 +1,6 @@
 #include "enet/enet.h"
 #include "MatrixServerManager.h"
+#include "MatrixNetworkManager.h"
 #include <stupid_logger.hpp>
 
 
@@ -32,10 +33,11 @@ void MatrixServerManager::Loop() {
     lgr.info("        ============= ");
     /* Wait up to 1000 milliseconds for an event. */
     while (enet_host_service(this->server, &event, 0) > 0) {
-        lgr.info("        00000    ");
+        //lgr.info("        00000    ");
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT:
-                lgr.info("A new client connected from " + std::to_string(event.peer->address.host));
+                lgr.info("A new client connected from " + IntToIPAddress(event.peer->address.host));
+                this->client = event.peer;
                 /* Store any relevant client information here. */
                 //event.peer->data = "Client information";
                 break;
