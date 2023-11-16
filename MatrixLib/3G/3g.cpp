@@ -520,11 +520,6 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
         // case WM_ACTIVATE:
         case WM_ACTIVATEAPP:
         {
-            if (FLAG(g_Flags, GFLAG_KEEPALIVE))
-            {
-                // don't minimize or pause the game when keepalive flag is set
-                break;
-            }
             if (wParam != 0)
             {
                 SETFLAG(g_Flags, GFLAG_APPACTIVE);
@@ -544,6 +539,12 @@ LRESULT CALLBACK L3G_WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPar
             }
             else
             {
+                // Keep alive by default
+                if (!FLAG(g_Flags, GFLAG_KEEPALIVE)) {
+                    // don't minimize or pause the game when keepalive flag is set
+                    break;
+                }
+
                 RESETFLAG(g_Flags, GFLAG_APPACTIVE);
                 if (g_FormCur)
                 {
