@@ -17,7 +17,7 @@ public:
     // Make sure everything else is ready.
     static MatrixClientManager *GetInstance();
 
-    //void Loop();
+    void Loop();
 
     void TryConnect();
     void Say();

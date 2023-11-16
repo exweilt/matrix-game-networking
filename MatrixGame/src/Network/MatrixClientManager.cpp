@@ -1,5 +1,6 @@
 #include "enet/enet.h"
 #include "MatrixClientManager.h"
+#include "MatrixNetworkManager.h"
 #include <stupid_logger.hpp>
 
 MatrixClientManager::MatrixClientManager() {
@@ -24,6 +25,33 @@ MatrixClientManager *MatrixClientManager::GetInstance() {
     return &instance;
 }
 
+void MatrixClientManager::Loop() {
+    ENetEvent event;
+    while (enet_host_service(this->client, &event, 0) > 0) {
+        switch (event.type) {
+            case ENET_EVENT_TYPE_CONNECT:
+                lgr.info("Connected to server: " + IntToIPAddress(event.peer->address.host));
+                /* Store any relevant client information here. */
+                // event.peer->data = "Client information";
+                break;
+            case ENET_EVENT_TYPE_RECEIVE:
+                if (event.packet && event.packet->data && event.packet->dataLength > 0) {
+                    const char *c_str = reinterpret_cast<const char *>(event.packet->data);
+                    std::string str(c_str, event.packet->dataLength);
+                    lgr.info("Got package from server: {}")(str);
+                }
+
+                enet_packet_destroy(event.packet);
+
+                break;
+            case ENET_EVENT_TYPE_DISCONNECT:
+                // printf("%s disconnected.\n", event.peer->data);
+                lgr.info("Disconnect");
+                event.peer->data = NULL;
+        }
+    }
+}
+
 void MatrixClientManager::TryConnect() {
     ENetAddress server_address;
     ENetEvent event;
@@ -38,7 +66,7 @@ void MatrixClientManager::TryConnect() {
         exit(EXIT_FAILURE);
     }
     if (enet_host_service(client, &event, 5000) > 0 && event.type == ENET_EVENT_TYPE_CONNECT) {
-        ENetPacket *packet = enet_packet_create(0, 0, ENET_PACKET_FLAG_RELIABLE);
+        ENetPacket *packet = enet_packet_create(0, 0, ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
         enet_peer_send(this->server_peer, 0, packet);
         enet_host_flush(this->client);
         lgr.info("Connected to the server.");
@@ -52,7 +80,8 @@ void MatrixClientManager::TryConnect() {
 
 void MatrixClientManager::Say() {
     
-    ENetPacket *packet = enet_packet_create("aboba", strlen("aboba") + 1, ENET_PACKET_FLAG_RELIABLE);
+    ENetPacket *packet = enet_packet_create("aboba", strlen("aboba") + 1, ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_peer_send(this->server_peer, 0, packet);
     enet_host_flush(this->client);
+    lgr.info("sent package");
 }

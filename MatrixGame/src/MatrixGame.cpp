@@ -564,8 +564,8 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
         g_ClientMan = MatrixClientManager::GetInstance();
 #endif
 
-    if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
-        g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
+    //if (!FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO))
+    //    g_MatrixMap->EnterDialogMode(TEMPLATE_DIALOG_BEGIN);
 
     // this code can be safely removed from release : RELEASE_OFF
 

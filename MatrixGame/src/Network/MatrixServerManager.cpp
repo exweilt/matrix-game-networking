@@ -30,10 +30,7 @@ MatrixServerManager *MatrixServerManager::GetInstance() {
 
 void MatrixServerManager::Loop() {
     ENetEvent event;
-    lgr.info("        ============= ");
-    /* Wait up to 1000 milliseconds for an event. */
     while (enet_host_service(this->server, &event, 0) > 0) {
-        //lgr.info("        00000    ");
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT:
                 lgr.info("A new client connected from " + IntToIPAddress(event.peer->address.host));
@@ -52,8 +49,7 @@ void MatrixServerManager::Loop() {
 
                 break;
             case ENET_EVENT_TYPE_DISCONNECT:
-                //printf("%s disconnected.\n", event.peer->data);
-                ///* Reset the peer's client information. */
+                lgr.info("Disconnect");
                 event.peer->data = NULL;
         }
     }

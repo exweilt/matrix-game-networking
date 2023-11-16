@@ -2777,9 +2777,12 @@ static bool Egg2(
 void CMatrixMapLogic::Takt(int step) {
     DTRACE();
 
-    #ifdef SERVER_ON
-        g_ServerMan->Loop();
-    #endif
+#ifdef SERVER_ON
+    g_ServerMan->Loop();
+#endif
+#ifdef CLIENT_ON
+    g_ClientMan->Loop();
+#endif
 
     if (g_RangersInterface) {
         g_RangersInterface->m_Takt();
