@@ -3,6 +3,7 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
+#include "MatrixGame.h"
 #include "MatrixMap.hpp"
 #include "DevConsole.hpp"
 #include "MatrixSoundManager.hpp"
@@ -157,10 +158,27 @@ static void hCompress(
     }
 }
 
+static void hConnect([[maybe_unused]] const std::wstring &cmd, [[maybe_unused]] const std::wstring &params) {
+#ifdef CLIENT_ON
+    g_ClientMan->TryConnect();
+#endif
+}
+
+static void hSay([[maybe_unused]] const std::wstring &cmd, [[maybe_unused]] const std::wstring &params) {
+#ifdef CLIENT_ON
+
+    g_ClientMan->Say();
+#endif
+}
+
 SCmdItem CDevConsole::m_Commands[] = {
         {L"HELP", hHelp},   {L"SHADOWS", hShadows},       {L"CANNON", hCannon},
         {L"LOG", hLog},     {L"TRACESPD", hTestSpdTrace}, {L"BUILDCFG", hBuildCFG},
-        {L"MUSIC", hMusic}, {L"COMPRESS", hCompress},     {L"CALCVIS", hCalcVis},
+        {L"MUSIC", hMusic},
+        {L"COMPRESS", hCompress},
+        {L"CALCVIS", hCalcVis},
+        {L"CON", hConnect},
+        {L"SAY", hSay},
 
         {NULL, NULL}  // last
 };

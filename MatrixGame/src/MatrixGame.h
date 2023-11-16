@@ -9,6 +9,7 @@
 #include "MatrixGameDll.hpp"
 #include "Network/MatrixNetworkManager.h"
 #include "Network/MatrixServerManager.h"
+#include "Network/MatrixClientManager.h"
 
 #include "CHeap.hpp"
 #include "CBlockPar.hpp"
@@ -36,6 +37,9 @@ extern const GAME_NETWORK_MODE g_NetMode;
 
 #if defined(SERVER_ON)
     extern MatrixServerManager *g_ServerMan;
+#endif
+#if defined(CLIENT_ON)
+    extern MatrixClientManager *g_ClientMan;
 #endif
 
 class CGame {

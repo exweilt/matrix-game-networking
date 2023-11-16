@@ -1025,7 +1025,7 @@ void CFormMatrixGame::Keyboard(bool down, int scan) {
            }
         }
 
-        if (IsInputEqual("KEEPALIVE"))
+        if (IsInputEqual("K"))
         {
             m_LastScans.clear();
             INVERTFLAG(g_Flags, GFLAG_KEEPALIVE);

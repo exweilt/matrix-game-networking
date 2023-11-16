@@ -29,8 +29,10 @@ MatrixServerManager *MatrixServerManager::GetInstance() {
 
 void MatrixServerManager::Loop() {
     ENetEvent event;
+    lgr.info("        ============= ");
     /* Wait up to 1000 milliseconds for an event. */
     while (enet_host_service(this->server, &event, 0) > 0) {
+        lgr.info("        00000    ");
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT:
                 lgr.info("A new client connected from " + std::to_string(event.peer->address.host));
@@ -38,9 +40,12 @@ void MatrixServerManager::Loop() {
                 //event.peer->data = "Client information";
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
-                //printf("A packet of length %u containing %s was received from %s on channel %u.\n",
-                //       event.packet->dataLength, event.packet->data, event.peer->data, event.channelID);
-                ///* Clean up the packet now that we're done using it. */
+                if (event.packet && event.packet->data && event.packet->dataLength > 0) {
+                    const char *c_str = reinterpret_cast<const char *>(event.packet->data);
+                    std::string str(c_str, event.packet->dataLength);
+                    lgr.info("Got package: " + str);
+                }
+
                 enet_packet_destroy(event.packet);
 
                 break;

@@ -1,9 +1,27 @@
 #pragma once
 
-#include "MatrixGame.h"
-//#include "MatrixNetworkManager.hpp"
+#include "enet/enet.h"
 
-#include <string>
+class MatrixClientManager {
+private:
+    MatrixClientManager();
+
+public:
+    ~MatrixClientManager();
+
+    ENetAddress address;
+    ENetHost *client;
+    ENetPeer *server_peer;
+
+    // Also Initializes manager if it hasn't before.
+    // Make sure everything else is ready.
+    static MatrixClientManager *GetInstance();
+
+    //void Loop();
+
+    void TryConnect();
+    void Say();
+};
 
 enum GameState { 
     MAIN_MENU,
@@ -12,23 +30,3 @@ enum GameState {
     SPECTATOR,
 };
 
-
-class MatrixClientManager {
-public:
-    MatrixClientManager();
-    
-    GameState game_state;
-    int my_real_side;  // side id as it is in the server
-    //MatrixNetworkManager netman;
-
-    bool is_connected = false;
-    int server_port = 5000;
-    std::string server_ip = "192.0.0.1";
-    std::string username = "Player Gref";
-
-
-    //void EnterLobby();
-
-    //void Cycle();  // Takt
-
-};
