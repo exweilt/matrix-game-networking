@@ -307,6 +307,10 @@ void CGame::Init(HINSTANCE inst, HWND wnd, wchar *map, uint32_t seed, SRobotsSet
     else
         L3GInitAsEXE(inst, *g_MatrixData->BlockGet(L"Config"), L"MatrixGame", L"Matrix Game");
 
+#ifdef SERVER_ON
+    ConsoleWindowInit(inst);
+#endif
+
     //=========================================================================
     // this shit is pretending to be a settings provided by a main game
     // when this engine is used as dll. dirty solution, but seems to be

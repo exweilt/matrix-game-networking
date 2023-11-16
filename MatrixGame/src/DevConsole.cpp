@@ -7,11 +7,15 @@
 #include "MatrixMap.hpp"
 #include "DevConsole.hpp"
 #include "MatrixSoundManager.hpp"
+#include "Network/MatrixServerConsole.h"
+
+#include <stupid_logger.hpp>
 
 #include "CFile.hpp"
 
 #include <utils.hpp>
 #include <mmsystem.h>
+
 
 static void hHelp(
     [[maybe_unused]] const std::wstring& cmd,
@@ -171,6 +175,14 @@ static void hSay([[maybe_unused]] const std::wstring &cmd, [[maybe_unused]] cons
 #endif
 }
 
+const char *myString = ";) ;) ;) ;)";
+static void hConsole([[maybe_unused]] const std::wstring &cmd, [[maybe_unused]] const std::wstring &params) {
+#ifdef SERVER_ON
+    //lgr.info("sgijsegf0wjgwjg jwgjw09g jwgj");
+    SendMessage(g_ConsoleWnd, WM_CONSOLE_OUTPUT, 0, reinterpret_cast<LPARAM>(myString));
+#endif
+}
+
 SCmdItem CDevConsole::m_Commands[] = {
         {L"HELP", hHelp},   {L"SHADOWS", hShadows},       {L"CANNON", hCannon},
         {L"LOG", hLog},     {L"TRACESPD", hTestSpdTrace}, {L"BUILDCFG", hBuildCFG},
@@ -179,6 +191,7 @@ SCmdItem CDevConsole::m_Commands[] = {
         {L"CALCVIS", hCalcVis},
         {L"CON", hConnect},
         {L"SAY", hSay},
+        {L"CONSOLE", hConsole},
 
         {NULL, NULL}  // last
 };
