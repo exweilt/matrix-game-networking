@@ -481,7 +481,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     }
 
     DCP();
-
+    
     if (IsCrazy()) {
         static int ppx = -1;
         static int ppy = -1;
@@ -689,6 +689,7 @@ void CMatrixRobotAI::LogicTakt(int ms) {
 
     DCP();
 
+#ifndef CLIENT_ON
     // Normals. This makes robots slanted on slopes
     {
         float mul = (float)(1.0 - pow(0.996, double(ms)));
@@ -697,6 +698,12 @@ void CMatrixRobotAI::LogicTakt(int ms) {
         *(D3DXVECTOR3 *)&m_Core->m_Matrix._31 = LERPVECTOR(mul, *(D3DXVECTOR3 *)&m_Core->m_Matrix._31, up);
     }
     DCP();
+#endif
+
+// robots have reduced logic on client
+#ifdef CLIENT_ON
+    return;
+#endif
 
     // soles
     if (m_CurrState != ROBOT_IN_SPAWN) {

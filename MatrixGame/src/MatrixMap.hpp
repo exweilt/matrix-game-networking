@@ -225,7 +225,7 @@ struct SGroupVisibility {
 #define MMFLAG_SOUND_ORDER_ATTACK_DISABLE   SETBIT(12)
 #define MMFLAG_SOUND_ORDER_CAPTURE_ENABLED  SETBIT(13)
 #define MMFLAG_DISABLE_DRAW_OBJECT_LIGHTS   SETBIT(14)
-#define MMFLAG_WIN                          SETBIT(15)
+#define MMFLAG_WIN                          SETBIT(15) // TODO: seems like this one is for both win and loose -> rename
 #define MMFLAG_MUSIC_VOL_CHANGING           SETBIT(16)
 #define MMFLAG_TRANSITION                   SETBIT(17)
 #define MMFLAG_VIDEO_RESOURCES_READY        SETBIT(18)  // VB's, IB's and Non managed textures

@@ -180,32 +180,35 @@ void CIFaceElement::Render(BYTE alpha) {
         memcpy(geom, m_StateImages[GetState()].m_Geom, sizeof(SVert_V4_UV) * 4);
         memcpy(geom + 4, m_StateImages[GetState()].m_Geom, sizeof(SVert_V4_UV) * 4);
 
-        float t = 0;
-        if (!g_MatrixMap->MaintenanceDisabled())
-            t = g_MatrixMap->BeforMaintenanceTimeT();
 
-        float hg = geom[0].p.y - geom[1].p.y;
-        float ht = geom[0].tv - geom[1].tv;
-        float wg = geom[3].p.x - geom[1].p.x;
+        if (!g_MatrixMap->MaintenanceDisabled()) {
+            float t = 0;
+            t = g_MatrixMap->BeforMaintenanceTimeT(); // TODO: rename
 
-        geom[0].p.y -= hg * t;
-        geom[2].p.y -= hg * t;
-        geom[0].tv -= ht * t;
-        geom[2].tv -= ht * t;
+            float hg = geom[0].p.y - geom[1].p.y;
+            float ht = geom[0].tv - geom[1].tv;
+            float wg = geom[3].p.x - geom[1].p.x;
 
-        geom[1 + 4].p.y = geom[0 + 4].p.y - hg * t;
-        geom[3 + 4].p.y = geom[2 + 4].p.y - hg * t;
-        geom[1 + 4].tv = geom[0 + 4].tv - ht * t;
-        geom[3 + 4].tv = geom[2 + 4].tv - ht * t;
+            geom[0].p.y -= hg * t;
+            geom[2].p.y -= hg * t;
+            geom[0].tv -= ht * t;
+            geom[2].tv -= ht * t;
 
-        float d = wg / float(m_StateImages[GetState()].pImage->GetSizeX());
-        for (int i = 4; i < 8; ++i) {
-            geom[i].tu += d;
+            geom[1 + 4].p.y = geom[0 + 4].p.y - hg * t;
+            geom[3 + 4].p.y = geom[2 + 4].p.y - hg * t;
+            geom[1 + 4].tv = geom[0 + 4].tv - ht * t;
+            geom[3 + 4].tv = geom[2 + 4].tv - ht * t;
+
+            float d = wg / float(m_StateImages[GetState()].pImage->GetSizeX());
+            for (int i = 4; i < 8; ++i) {
+                geom[i].tu += d;
+            }
+
+            CInstDraw::AddVerts(geom, m_StateImages[GetState()].pImage);
+
+            CInstDraw::AddVerts(geom + 4, m_StateImages[GetState()].pImage);
         }
 
-        CInstDraw::AddVerts(geom, m_StateImages[GetState()].pImage);
-
-        CInstDraw::AddVerts(geom + 4, m_StateImages[GetState()].pImage);
     }
     else {
 #if defined _TRACE || defined _DEBUG

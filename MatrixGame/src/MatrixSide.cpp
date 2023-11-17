@@ -455,6 +455,12 @@ void CMatrixSideUnit::LogicTakt(int ms) {
 
     DCP();
     if (g_MatrixMap->GetPlayerSide() != this || FLAG(g_MatrixMap->m_Flags, MMFLAG_AUTOMATIC_MODE)) {
+
+// Client enemy Sides should have no logic
+#ifdef CLIENT_ON
+        return;
+#endif
+
         if (m_Id == PLAYER_SIDE) {
             if (!g_MatrixMap->MaintenanceDisabled()) {
                 if (g_MatrixMap->BeforeMaintenanceTime() == 0 && (FRND(1) < 0.05f)) {
@@ -473,6 +479,7 @@ void CMatrixSideUnit::LogicTakt(int ms) {
             }
         }
 
+        // TODO: comment TaktHL and TaktTL
         DCP();
         TaktHL();
         DCP();

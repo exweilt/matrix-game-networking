@@ -394,11 +394,16 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, voi
     CMatrixMapStatic *ms;
 
     if (step == RS_SIDEAI) {
+// Dont need Reinforcement ability on Client and Server
+#if defined(CLIENT_ON) || defined(SERVER_ON)
+        m_MaintenancePRC = 0;
+#else
         m_MaintenancePRC = 100;
         ic = propkey->FindAsWStr(DATA_MAINTENANCETIME);
         if (ic >= 0) {
             m_MaintenancePRC = propval->GetAsParamParser(ic).GetInt();
         }
+#endif
         InitMaintenanceTime();
 
         ic = propkey->FindAsWStr(DATA_SIDEAIINFO);
@@ -667,6 +672,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, voi
         return n;
     }
 
+#ifndef CLIENT_ON
     if (step == RS_ROBOTS) {
         // loading robots
         int n = 0;
@@ -734,7 +740,9 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, voi
         }
         return n;
     }
+#endif
 
+#ifndef CLIENT_ON
     if (step == RS_CANNONS) {
         // loading cannons
         CDataBuf *c0 = stor.GetBuf(DATA_CANNONS, DATA_CANNONS_X, ST_FLOAT);
@@ -858,6 +866,7 @@ int CMatrixMap::ReloadDynamics(CStorage &stor, CMatrixMap::EReloadStep step, voi
 
         return n;
     }
+#endif
 
     if (step == RS_EFFECTS) {
         // loading effects

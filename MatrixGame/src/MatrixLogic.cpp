@@ -3153,6 +3153,9 @@ void CMatrixMapLogic::Takt(int step) {
 
         if (m_BeforeWinLooseDialogCount > 1)
             --m_BeforeWinLooseDialogCount;
+
+// Cannot win or loose on Client and Server
+#if !defined(SERVER_ON) && !defined(CLIENT_ON)
         else if (m_BeforeWinLooseDialogCount == 1) {
             if (FLAG(g_MatrixMap->m_Flags, MMFLAG_FULLAUTO)) {
                 g_ExitState = 1;
@@ -3203,6 +3206,7 @@ void CMatrixMapLogic::Takt(int step) {
                 }
             }
         }
+#endif
     }
 }
 

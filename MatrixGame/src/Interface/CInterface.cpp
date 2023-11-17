@@ -1775,12 +1775,15 @@ void CInterface::Init(void) {
                     }
                     else if (pElement->m_strName == IF_CALL_FROM_HELL && !bld_tu) {
                         pElement->SetVisibility(true);
+                        // TODO: rename Maintenance to Reinforcement . IF_CALL_FROM_HELL 
+
                         if (g_MatrixMap->MaintenanceDisabled() || g_MatrixMap->BeforeMaintenanceTime() > 0) {
                             pElement->SetState(IFACE_DISABLED);
                         }
                         else if (pElement->GetState() == IFACE_DISABLED) {
                             pElement->SetState(IFACE_NORMAL);
                         }
+
                     }
                     else if (bld->m_TurretsMax == 1 && pElement->m_strName == IF_PODL1) {
                         pElement->SetVisibility(true);
