@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Network/MatrixNetworkManager.h"
 #include "enet/enet.h"
 
 
@@ -18,5 +19,9 @@ public:
     // Make sure everything else is ready.
     static MatrixServerManager *GetInstance();
 
+    int tick_period = TICK_PERIOD;
+    int last_tick_time = 0;
     void Loop();
+    void Tick();
+
 };

@@ -8,7 +8,12 @@
 #include <functional>
 #include <vector>
 #include <future>
+#include <functional>
 
+#define TICKRATE 1
+
+// in ms
+#define TICK_PERIOD int(1000 / TICKRATE)
 
 #if defined(CLIENT_ON) && defined(SERVER_ON)
 	#error CLIENT_ON and SERVER_ON variables cannot be defined at the same time
@@ -20,12 +25,24 @@ enum GAME_NETWORK_MODE {
 	SERVER,
 };
 
+struct RobotSnapshot {
+    unsigned int time;
+    DWORD id;
+    float pos_x;
+    float pos_y;
+    unsigned char side;
+    int health;
+};
+
 // Aborts if Initialization is unsuccessful
 void ENet_Init();
 
 void ENet_Deinit();
 
 std::string IntToIPAddress(unsigned int ip);
+unsigned int IPAdressToInt(std::string);
+
+
 
 //enum RequestType {
 //    NONE,
