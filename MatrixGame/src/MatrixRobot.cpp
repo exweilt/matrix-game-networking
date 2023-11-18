@@ -700,11 +700,6 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     DCP();
 #endif
 
-// robots have reduced logic on client
-#ifdef CLIENT_ON
-    return;
-#endif
-
     // soles
     if (m_CurrState != ROBOT_IN_SPAWN) {
         DCP();
@@ -921,6 +916,12 @@ void CMatrixRobotAI::LogicTakt(int ms) {
     }
 
     DCP();
+
+    // robots have reduced logic on client
+#ifdef CLIENT_ON
+    return;
+#endif
+
 
     // ORDERS PROCESSING/////////////////////////////////////////////////////
 

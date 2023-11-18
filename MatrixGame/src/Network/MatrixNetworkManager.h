@@ -1,5 +1,9 @@
 #pragma once
 
+//#include "MatrixGame.h"
+//#include "MatrixMap.hpp"
+#include "MatrixObjectRobot.hpp"
+
 #include "enet/enet.h"
 
 #include <queue>
@@ -9,6 +13,8 @@
 #include <vector>
 #include <future>
 #include <functional>
+
+
 
 #define TICKRATE 1
 
@@ -39,6 +45,7 @@ struct RobotSnapshot {
     unsigned char side;
     int max_health;
     int health;
+    EAnimation animation;
 };
 
 // Aborts if Initialization is unsuccessful

@@ -15,6 +15,13 @@
 #include "MatrixGameDll.hpp"
 #include "MatrixMultiSelection.hpp"
 
+#ifdef SERVER_ON
+#include "Network/MatrixServerManager.h"
+#endif
+#ifdef CLIENT_ON
+#include "Network/MatrixClientManager.h"
+#endif
+
 // CPoint MatrixDir45[8]={	CPoint(-1,0),	CPoint(1,0),CPoint(0,-1),CPoint(0,1),
 //						CPoint(-1,-1),CPoint(1,1),CPoint(-1,1),CPoint(1,-1)};
 

@@ -3,12 +3,11 @@
 // Licensed under GPLv2 or any later version
 // Refer to the LICENSE file included
 
-#ifndef MATRIX_MAP_HPP
-#define MATRIX_MAP_HPP
+#pragma once
 
+#include "MatrixGame.h"
 #include "Common.hpp"
 #include "MatrixConfig.hpp"
-#include "MatrixGame.h"
 
 #include "CStorage.hpp"
 
@@ -791,5 +790,3 @@ inline float CMatrixMap::GetGroupMaxZObjRobots(int x, int y) {
         return 0;
     return z;
 }
-
-#endif

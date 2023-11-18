@@ -4,6 +4,7 @@
 #include "MatrixServerManager.h"
 #include "MatrixNetworkManager.h"
 #include "MatrixRobot.hpp"
+#include "MatrixObjectRobot.hpp"
 #include <stupid_logger.hpp>
 
 
@@ -102,6 +103,7 @@ void MatrixServerManager::Tick() {
             snap.time = time;
             snap.health = s->AsRobot()->GetHitPoint();
             snap.max_health = s->AsRobot()->GetMaxHitPoint();
+            snap.animation = s->AsRobot()->GetAnimation();
 
             memcpy(&robots_buffer[1 + num * sizeof(RobotSnapshot)], &snap, sizeof(RobotSnapshot));
             num++;

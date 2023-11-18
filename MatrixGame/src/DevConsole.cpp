@@ -16,6 +16,11 @@
 #include <mmsystem.h>
 
 
+#ifdef CLIENT_ON
+#include "Network/MatrixClientManager.h"
+#endif
+
+
 static void hHelp(
     [[maybe_unused]] const std::wstring& cmd,
     [[maybe_unused]] const std::wstring& params)
