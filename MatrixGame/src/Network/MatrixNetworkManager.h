@@ -25,12 +25,19 @@ enum GAME_NETWORK_MODE {
 	SERVER,
 };
 
+// Max value has to be below 256
+enum class PACKET_TYPE {
+    NONE,
+    ROBOTS_SNAPSHOT,
+};
+
 struct RobotSnapshot {
     unsigned int time;
     DWORD id;
     float pos_x;
     float pos_y;
     unsigned char side;
+    int max_health;
     int health;
 };
 

@@ -10,7 +10,7 @@ public:
     ~MatrixClientManager();
 
     ENetAddress address;
-    ENetHost *client;
+    ENetHost *client_peer;
     ENetPeer *server_peer;
 
     // Also Initializes manager if it hasn't before.

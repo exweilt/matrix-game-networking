@@ -3,6 +3,7 @@
 #include "MatrixMapStatic.hpp"
 #include "MatrixServerManager.h"
 #include "MatrixNetworkManager.h"
+#include "MatrixRobot.hpp"
 #include <stupid_logger.hpp>
 
 
@@ -33,13 +34,19 @@ MatrixServerManager *MatrixServerManager::GetInstance() {
     return &instance;
 }
 
+void MatrixServerManager::send_package(void *data, int length) {
+    ENetPacket *packet = enet_packet_create(data, length, ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
+    enet_peer_send(this->client_peer, 0, packet);
+    enet_host_flush(this->server);
+}
+
 void MatrixServerManager::Loop() {
     ENetEvent event;
     while (enet_host_service(this->server, &event, 0) > 0) {
         switch (event.type) {
             case ENET_EVENT_TYPE_CONNECT:
                 lgr.info("A new client connected from " + IntToIPAddress(event.peer->address.host));
-                this->client = event.peer;
+                this->client_peer = event.peer;
                 /* Store any relevant client information here. */
                 //event.peer->data = "Client information";
                 break;
@@ -67,15 +74,41 @@ void MatrixServerManager::Loop() {
 
 }
 
+#define MAX_ROBOTS 256                  // Max 256 due to num of type unsigned char
 void MatrixServerManager::Tick() {
-    //if (!this->client)
-    //    return;
-    lgr.info("--------------------------------------------");
+    if (!this->client_peer)
+        return;
+
+    // buffer used over vector or other data structures for Perfomance purposes
+    // Here first byte stores Type of package second byte stores number of RobotSnapshot
+    static unsigned char robots_buffer[MAX_ROBOTS * sizeof(RobotSnapshot) + 2]{};
+
+
+    unsigned int time = g_MatrixMap->GetTime();
+
+    unsigned char num = 0;
     CMatrixMapStatic *s = CMatrixMapStatic::GetFirstLogic();
     for (; s; s = s->GetNextLogic()) {
         if (s->IsRobot()) {
-            lgr.info("Robot: {} | side: {}")(std::format("{:x}", s->id), s->GetSide());
+            if (num > MAX_ROBOTS) {
+                lgr.error("Too much robots: attempt of stack overflow");
+                break;
+            }
+            RobotSnapshot snap;
+            snap.id = s->id;
+            snap.side = s->GetSide();
+            snap.pos_x = s->AsRobot()->m_PosX;
+            snap.pos_y = s->AsRobot()->m_PosY;
+            snap.time = time;
+            snap.health = s->AsRobot()->GetHitPoint();
+            snap.max_health = s->AsRobot()->GetMaxHitPoint();
+
+            memcpy(&robots_buffer[1 + num * sizeof(RobotSnapshot)], &snap, sizeof(RobotSnapshot));
+            num++;
         }
     }
-
+    robots_buffer[0] = static_cast<unsigned char>(PACKET_TYPE::ROBOTS_SNAPSHOT);
+    robots_buffer[1] = num;
+    this->send_package(robots_buffer, num*sizeof(RobotSnapshot) + 1);
 }
+#undef MAX_ROBOTS

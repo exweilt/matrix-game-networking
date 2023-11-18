@@ -13,7 +13,7 @@ public:
 
     ENetAddress address;
     ENetHost *server;
-    ENetPeer *client;
+    ENetPeer *client_peer;
 
     // Also Initializes manager if it hasn't before.
     // Make sure everything else is ready.
@@ -24,4 +24,5 @@ public:
     void Loop();
     void Tick();
 
+    void send_package(void *data, int length);
 };
