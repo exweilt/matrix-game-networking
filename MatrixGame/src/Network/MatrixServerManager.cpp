@@ -36,9 +36,25 @@ MatrixServerManager *MatrixServerManager::GetInstance() {
 }
 
 void MatrixServerManager::send_package(void *data, int length) {
+    if (!this->client_peer)
+        return;
     ENetPacket *packet = enet_packet_create(data, length, ENET_PACKET_FLAG_UNRELIABLE_FRAGMENT);
     enet_peer_send(this->client_peer, 0, packet);
     enet_host_flush(this->server);
+}
+
+void MatrixServerManager::send_deathsnapshot(unsigned int robot_id) {
+    static unsigned char buffer[sizeof(DeathSnapshot) + 1];
+    buffer[0] = static_cast<unsigned char>(PACKET_TYPE::DEATH_SNAPSHOT);
+    DeathSnapshot ds(g_MatrixMap->GetTime(), robot_id);
+
+    new (buffer + 1) DeathSnapshot;
+
+    reinterpret_cast<DeathSnapshot *>(&buffer[1])->time = g_MatrixMap->GetTime();
+    reinterpret_cast<DeathSnapshot *>(&buffer[1])->id = robot_id;
+
+    send_package(buffer, sizeof(buffer));
+
 }
 
 void MatrixServerManager::Loop() {

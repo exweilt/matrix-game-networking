@@ -15,6 +15,8 @@
 
 #include "Mem.hpp"
 
+unsigned int CMatrixMapStatic::free_id = 0;
+
 bool FreeObjResources(uintptr_t user) {
     DTRACE();
     auto obj = reinterpret_cast<CMatrixMapStatic*>(user);

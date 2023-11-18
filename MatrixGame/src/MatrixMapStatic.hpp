@@ -344,7 +344,7 @@ public:
 
         m_CamDistSq = 10000.0f;
 
-        this->id = (DWORD)this;
+        this->id = CMatrixMapStatic::free_id++;
     }
 #pragma warning(default : 4355)
 
@@ -502,7 +502,12 @@ public:
     // Set Object's rotation around local Z-axis(points up and a.k.a. roll) to some value in radians.
     virtual void SetRotationZ(float roll);
 
-    unsigned long id;
+    unsigned int id;
+
+    // id which is free, should be incremented after each id assignment. TODO: reset at restart, improve control by encapsulation
+    static unsigned int free_id;
+
+
 
 #ifdef SHOW_ASSIGNED_GROUPS
     void ShowGroups(void);

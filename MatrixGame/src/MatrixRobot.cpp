@@ -6,6 +6,7 @@
 #include <new>
 #include <algorithm>
 
+#include "MatrixGame.h"
 #include "MatrixRobot.hpp"
 #include "MatrixObjectBuilding.hpp"
 #include "Logic/MatrixRule.h"
@@ -17,6 +18,10 @@
 #include "Effects/MatrixEffectElevatorField.hpp"
 #include "Effects/MatrixEffectSelection.hpp"
 #include "Effects/MatrixEffectExplosion.hpp"
+
+#include "Network/MatrixServerManager.h"
+
+#include <stupid_logger.hpp>
 
 void SWeaponRepairData::Release(void) {
     m_b0.Release();
@@ -2039,6 +2044,9 @@ bool CMatrixRobotAI::Damage(
         DCP();
         SwitchAnimation(ANIMATION_OFF);
         m_CurrState = ROBOT_DIP;
+#ifdef SERVER_ON
+        g_ServerMan->send_deathsnapshot(this->id);
+#endif
 
         bool onair = false;
 

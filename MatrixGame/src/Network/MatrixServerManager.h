@@ -25,4 +25,6 @@ public:
     void Tick();
 
     void send_package(void *data, int length);
+
+    void send_deathsnapshot(unsigned int robot_id);
 };

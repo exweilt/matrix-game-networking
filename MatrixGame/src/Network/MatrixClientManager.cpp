@@ -37,7 +37,7 @@ void MatrixClientManager::UpdateRobots(unsigned char *array, int len) {
     for (int idx = 0; idx < len; idx++) {
         RobotSnapshot *snap;
         snap = reinterpret_cast<RobotSnapshot*>(array + idx * sizeof(RobotSnapshot));
-        if (this->registered_robots.find(snap->id) == this->registered_robots.end()) {
+        if (this->server_client_accordance.find(snap->id) == this->server_client_accordance.end()) {
             
             //// Create new robot with data
             //CMatrixRobotAI *new_robot = g_MatrixMap->StaticAdd<CMatrixRobotAI>();
@@ -79,7 +79,7 @@ void MatrixClientManager::UpdateRobots(unsigned char *array, int len) {
             bot.m_Weapon[2].m_Unit.m_nKind = RUK_WEAPON_LASER;
             bot.m_Weapon[3].m_Unit.m_nKind = RUK_WEAPON_LASER;
 
-            D3DXVECTOR3 vec(snap->pos_x, snap->pos_y, 20.0f);
+            D3DXVECTOR3 vec(0, 0, 20.0f);
             CMatrixRobotAI *r = bot.GetRobot(vec, snap->side);
 
             g_MatrixMap->AddObject(r, true);
@@ -88,7 +88,7 @@ void MatrixClientManager::UpdateRobots(unsigned char *array, int len) {
             r->CreateTextures();
             r->InitMaxHitpoint(10000.0);
 
-            r->id = snap->id;
+            //r->id = snap->id;
 
             SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
             g_MatrixMap->GetSideById(snap->side)
@@ -96,7 +96,9 @@ void MatrixClientManager::UpdateRobots(unsigned char *array, int len) {
             RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
 
 
-            this->registered_robots[snap->id] = r;
+            this->registered_robots[r->id] = r;
+            this->server_client_accordance[snap->id] = r->id;
+            this->client_server_accordance[r->id] = snap->id;
 
             //this->robots_at_end[snap->id] = new_robot;
         } 
@@ -122,14 +124,29 @@ void MatrixClientManager::Loop() {
                 break;
             case ENET_EVENT_TYPE_RECEIVE:
                 if (event.packet && event.packet->data && event.packet->dataLength > 0) {
-                    lgr.info("Got package from server");
+                    //lgr.info("Got package from server");
                     PACKET_TYPE type = static_cast<PACKET_TYPE>(event.packet->data[0]);
                     switch (type) {
-                        case PACKET_TYPE::ROBOTS_SNAPSHOT:
+                        case PACKET_TYPE::DEATH_SNAPSHOT: {
+                            DeathSnapshot *ds = reinterpret_cast<DeathSnapshot *>(event.packet->data + 1);
+                            CMatrixRobotAI *r = this->registered_robots[this->server_client_accordance[ds->id]];
+                            this->registered_robots.erase(r->id);
+                            this->robots_at_end.erase(r->id);
+                            this->robots_at_start.erase(r->id);
+                            //this->server_client_accordance.erase(ds->id);
+                            this->client_server_accordance.erase(r->id);
+                            r->MustDie();
+
+                            break;
+                        }
+                        case PACKET_TYPE::ROBOTS_SNAPSHOT: {
                             unsigned char number = event.packet->data[1];  // TODO: potential error
-                            lgr.info("Number of robots: {}")(number);
+                            //lgr.info("Number of robots: {}")(number);
                             this->UpdateRobots(&event.packet->data[2], number);
                             break;
+                        }
+                            //ds->time
+                            //this->death_list[this->server_client_accordance[ds->id]] = *ds;
                     }
                     // const char *c_str = reinterpret_cast<const char *>(event.packet->data);
                     // std::string str(c_str, event.packet->dataLength);
@@ -146,13 +163,21 @@ void MatrixClientManager::Loop() {
     }
     CMatrixMapStatic *s = CMatrixMapStatic::GetFirstLogic();
     for (; s; s = s->GetNextLogic()) {
-        if (s->IsRobot() && this->registered_robots.find(s->id) != this->registered_robots.end()) {
+        if (!s->IsRobot())
+            continue;
+
+        //// Death processing
+        //if (this->death_list.find(s->id) != this->death_list.end() && ) {
+        //    s->AsRobot()->MustDie();
+
+        //}
+        if (this->registered_robots.find(s->id) != this->registered_robots.end()) {
             CMatrixRobotAI *r = this->registered_robots[s->id];
             float phase = float(g_MatrixMap->GetTime() - this->end_snapshot_time) / float(this->end_snapshot_time - this->start_snapshot_time);
-            r->m_PosX = LERPFLOAT(phase, this->robots_at_start[r->id].pos_x, this->robots_at_end[r->id].pos_x);
-            r->m_PosY = LERPFLOAT(phase, this->robots_at_start[r->id].pos_y, this->robots_at_end[r->id].pos_y);
+            r->m_PosX = LERPFLOAT(phase, this->robots_at_start[this->client_server_accordance[r->id]].pos_x, this->robots_at_end[this->client_server_accordance[r->id]].pos_x);
+            r->m_PosY = LERPFLOAT(phase, this->robots_at_start[this->client_server_accordance[r->id]].pos_y, this->robots_at_end[this->client_server_accordance[r->id]].pos_y);
 
-            r->m_Animation = this->robots_at_start[r->id].animation;
+            r->m_Animation = this->robots_at_start[this->client_server_accordance[r->id]].animation;
             r->RChange(MR_Matrix | MR_ShadowProjTex | MR_ShadowStencil);
             r->RNeed(MR_Matrix);
             r->JoinToGroup();

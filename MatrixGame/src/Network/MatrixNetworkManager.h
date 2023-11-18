@@ -16,7 +16,7 @@
 
 
 
-#define TICKRATE 1
+#define TICKRATE 8
 
 // in ms
 #define TICK_PERIOD int(1000 / TICKRATE)
@@ -35,17 +35,23 @@ enum GAME_NETWORK_MODE {
 enum class PACKET_TYPE {
     NONE,
     ROBOTS_SNAPSHOT,
+    DEATH_SNAPSHOT,
 };
 
 struct RobotSnapshot {
     unsigned int time;
-    DWORD id;
+    unsigned int id;
     float pos_x;
     float pos_y;
     unsigned char side;
     int max_health;
     int health;
     EAnimation animation;
+};
+
+struct DeathSnapshot {
+    int time;
+    unsigned int id;
 };
 
 // Aborts if Initialization is unsuccessful

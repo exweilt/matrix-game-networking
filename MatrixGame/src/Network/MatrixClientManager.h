@@ -18,10 +18,14 @@ public:
 
     int start_snapshot_time = 0;
     int end_snapshot_time = 0;
-    std::unordered_map<unsigned long, RobotSnapshot> robots_at_end;
-    std::unordered_map<unsigned long, RobotSnapshot> robots_at_start;
+    std::unordered_map<unsigned int, RobotSnapshot> robots_at_end; // TODO: encapsulate server ids
+    std::unordered_map<unsigned int, RobotSnapshot> robots_at_start;
 
-    std::unordered_map < unsigned long, CMatrixRobotAI*> registered_robots;
+    std::unordered_map<unsigned int, CMatrixRobotAI *> registered_robots; // get robots by their id (local)
+    std::unordered_map<unsigned int, unsigned int> server_client_accordance; // robot id from the server to robot id in client
+    std::unordered_map<unsigned int, unsigned int> client_server_accordance; // robot id from the client to robot id in server
+
+    std::unordered_map<unsigned int, DeathSnapshot> death_list; // Dead soon
 
     // Also Initializes manager if it hasn't before.
     // Make sure everything else is ready.
