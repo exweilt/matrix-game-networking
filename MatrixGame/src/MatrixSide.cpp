@@ -2131,6 +2131,7 @@ void CMatrixSideUnit::ClearTeam(int team) {
     m_Team[team].m_WaitUnionLast = 0;
 }
 
+// TODO: rename
 int CMatrixSideUnit::ClacSpawnTeam(int region, int nsh) {
     DTRACE();
     for (int i = 0; i < m_TeamCnt; i++) {

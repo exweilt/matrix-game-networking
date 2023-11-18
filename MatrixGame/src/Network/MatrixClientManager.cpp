@@ -1,7 +1,10 @@
 #include "enet/enet.h"
+#include "MatrixRobot.hpp"
 #include "MatrixClientManager.h"
 #include "MatrixNetworkManager.h"
+#include "Interface/CConstructor.h"
 #include <stupid_logger.hpp>
+#include <unordered_map>
 
 MatrixClientManager::MatrixClientManager() {
     this->address.host = ENET_HOST_ANY;
@@ -25,6 +28,89 @@ MatrixClientManager *MatrixClientManager::GetInstance() {
     return &instance;
 }
 
+void MatrixClientManager::UpdateRobots(unsigned char *array, int len) {
+    this->start_snapshot_time = this->end_snapshot_time;
+    this->end_snapshot_time = g_MatrixMap->GetTime();
+
+    this->robots_at_start = this->robots_at_end;
+
+    for (int idx = 0; idx < len; idx++) {
+        RobotSnapshot *snap;
+        snap = reinterpret_cast<RobotSnapshot*>(array + idx * sizeof(RobotSnapshot));
+        if (this->registered_robots.find(snap->id) == this->registered_robots.end()) {
+            
+            //// Create new robot with data
+            //CMatrixRobotAI *new_robot = g_MatrixMap->StaticAdd<CMatrixRobotAI>();
+            //new_robot->UnitInsert(0, MRT_HEAD, RUK_HEAD_DYNAMO);
+            //new_robot->UnitInsert(0, MRT_ARMOR, RUK_ARMOR_FULLSTACK);
+            ////new_robot->WeaponInsert(0, MRT_WEAPON, RUK_WEAPON_MISSILE, RUK_ARMOR_FULLSTACK, 0);
+            ////new_robot->WeaponInsert(0, MRT_WEAPON, RUK_WEAPON_MISSILE, RUK_ARMOR_FULLSTACK, 1);
+            //new_robot->UnitInsert(0, MRT_CHASSIS, RUK_CHASSIS_ANTIGRAVITY);
+            //new_robot->m_ShadowType = g_Config.m_RobotShadow;
+            //new_robot->m_ShadowSize = 128;
+
+            //new_robot->m_Side = snap->side;
+            ////new_robot->RobotWeaponInit();
+            //new_robot->m_PosX = snap->pos_x;
+            //new_robot->m_PosY = snap->pos_y;
+            ////lgr.info("id {} side {} posX {} anim {} health {}")(
+            ////        std::to_string(snap->id), std::to_string(snap->side), std::to_string(snap->pos_x),
+            ////        std::to_string(static_cast<unsigned int>(snap->animation)), std::to_string(snap->health));
+            //new_robot->CalcRobotMass();
+            //new_robot->CreateTextures();
+            //new_robot->JoinToGroup();
+
+            ////new_robot->InitMaxHitpoint(10000.0);
+            //new_robot->id = snap->id;
+
+            //SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
+            //g_MatrixMap->GetPlayerSide()->PGOrderStop(
+            //        g_MatrixMap->GetSideById(snap->side)->RobotToLogicGroup(new_robot));
+            //RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
+
+            SSpecialBot bot{};
+
+            bot.m_Chassis.m_nKind = RUK_CHASSIS_ANTIGRAVITY;
+            bot.m_Armor.m_Unit.m_nKind = RUK_ARMOR_FULLSTACK;
+            bot.m_Head.m_nKind = RUK_HEAD_DYNAMO;
+
+            bot.m_Weapon[0].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            bot.m_Weapon[1].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            bot.m_Weapon[2].m_Unit.m_nKind = RUK_WEAPON_LASER;
+            bot.m_Weapon[3].m_Unit.m_nKind = RUK_WEAPON_LASER;
+
+            D3DXVECTOR3 vec(snap->pos_x, snap->pos_y, 20.0f);
+            CMatrixRobotAI *r = bot.GetRobot(vec, snap->side);
+
+            g_MatrixMap->AddObject(r, true);
+
+            r->JoinToGroup();
+            r->CreateTextures();
+            r->InitMaxHitpoint(10000.0);
+
+            r->id = snap->id;
+
+            SETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
+            g_MatrixMap->GetSideById(snap->side)
+                    ->PGOrderStop(g_MatrixMap->GetSideById(snap->side)->RobotToLogicGroup(r));
+            RESETFLAG(g_MatrixMap->m_Flags, MMFLAG_SOUND_ORDER_ATTACK_DISABLE);
+
+
+            this->registered_robots[snap->id] = r;
+
+            //this->robots_at_end[snap->id] = new_robot;
+        } 
+        //else {
+        //    lgr.info("55 55 55");
+        //    // Update existing robot data
+        //}
+        this->robots_at_end[snap->id].pos_x = snap->pos_x;
+        this->robots_at_end[snap->id].pos_y = snap->pos_y;
+        this->robots_at_end[snap->id].animation = snap->animation;
+        //lgr.info("55 55 55");
+    }
+}
+
 void MatrixClientManager::Loop() {
     ENetEvent event;
     while (enet_host_service(this->client_peer, &event, 0) > 0) {
@@ -40,12 +126,13 @@ void MatrixClientManager::Loop() {
                     PACKET_TYPE type = static_cast<PACKET_TYPE>(event.packet->data[0]);
                     switch (type) {
                         case PACKET_TYPE::ROBOTS_SNAPSHOT:
-                            unsigned char number = event.packet->data[1]; // TODO: potential error
+                            unsigned char number = event.packet->data[1];  // TODO: potential error
                             lgr.info("Number of robots: {}")(number);
+                            this->UpdateRobots(&event.packet->data[2], number);
                             break;
                     }
-                    //const char *c_str = reinterpret_cast<const char *>(event.packet->data);
-                    //std::string str(c_str, event.packet->dataLength);
+                    // const char *c_str = reinterpret_cast<const char *>(event.packet->data);
+                    // std::string str(c_str, event.packet->dataLength);
                 }
 
                 enet_packet_destroy(event.packet);
@@ -55,6 +142,21 @@ void MatrixClientManager::Loop() {
                 // printf("%s disconnected.\n", event.peer->data);
                 lgr.info("Disconnect");
                 event.peer->data = NULL;
+        }
+    }
+    CMatrixMapStatic *s = CMatrixMapStatic::GetFirstLogic();
+    for (; s; s = s->GetNextLogic()) {
+        if (s->IsRobot() && this->registered_robots.find(s->id) != this->registered_robots.end()) {
+            CMatrixRobotAI *r = this->registered_robots[s->id];
+            float phase = float(g_MatrixMap->GetTime() - this->end_snapshot_time) / float(this->end_snapshot_time - this->start_snapshot_time);
+            r->m_PosX = LERPFLOAT(phase, this->robots_at_start[r->id].pos_x, this->robots_at_end[r->id].pos_x);
+            r->m_PosY = LERPFLOAT(phase, this->robots_at_start[r->id].pos_y, this->robots_at_end[r->id].pos_y);
+
+            r->m_Animation = this->robots_at_start[r->id].animation;
+            r->RChange(MR_Matrix | MR_ShadowProjTex | MR_ShadowStencil);
+            r->RNeed(MR_Matrix);
+            r->JoinToGroup();
+            //r->SwitchAnimation
         }
     }
 }

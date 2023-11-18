@@ -105,12 +105,12 @@ void MatrixServerManager::Tick() {
             snap.max_health = s->AsRobot()->GetMaxHitPoint();
             snap.animation = s->AsRobot()->GetAnimation();
 
-            memcpy(&robots_buffer[1 + num * sizeof(RobotSnapshot)], &snap, sizeof(RobotSnapshot));
+            memcpy(&robots_buffer[2 + num * sizeof(RobotSnapshot)], &snap, sizeof(RobotSnapshot));
             num++;
         }
     }
     robots_buffer[0] = static_cast<unsigned char>(PACKET_TYPE::ROBOTS_SNAPSHOT);
     robots_buffer[1] = num;
-    this->send_package(robots_buffer, num*sizeof(RobotSnapshot) + 1);
+    this->send_package(robots_buffer, num*sizeof(RobotSnapshot) + 2);
 }
 #undef MAX_ROBOTS

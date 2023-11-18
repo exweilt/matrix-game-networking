@@ -158,7 +158,6 @@ struct SPneumaticData {
 };
 
 class CMatrixRobot : public CMatrixMapStatic {
-    EAnimation m_Animation;
     CMatrixBuilding *m_Base;  //база из который вышел робот
 
 protected:
@@ -173,6 +172,7 @@ protected:
 
     // DWORD       m_RobotFlags; // m_ObjectState used instead. do not uncomment!
 public:
+    EAnimation m_Animation;
     EShadowType m_ShadowType;  // 0-off 1-proj 2-proj with anim 3-stencil
     int m_ShadowSize;          // texture size for proj
 
